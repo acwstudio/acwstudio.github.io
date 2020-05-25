@@ -24,18 +24,19 @@
             <header id="header">
                 <a href="index.html" class="logo"><strong>AS-Programmer</strong>
                     Laravel и среда исполнения на Docker</a>
-<!--                <ul class="icons">-->
-<!--                    <li><a href="#" class="icon brands fa-twitter"><span-->
-<!--                            class="label">Twitter</span></a></li>-->
-<!--                    <li><a href="#" class="icon brands fa-facebook-f"><span-->
-<!--                            class="label">Facebook</span></a></li>-->
-<!--                    <li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a>-->
-<!--                    </li>-->
-<!--                    <li><a href="#" class="icon brands fa-instagram"><span-->
-<!--                            class="label">Instagram</span></a></li>-->
-<!--                    <li><a href="#" class="icon brands fa-medium-m"><span-->
-<!--                            class="label">Medium</span></a></li>-->
-<!--                </ul>-->
+                <ul class="icons">
+                    <li><a href="#" class="icon brands fa-telegram"><span
+                            class="label">Telegram</span></a></li>
+                    <li><a href="#" class="icon brands fa-facebook-f"><span
+                            class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon brands fa-whatsapp">
+                        <span class="label">WhatsApp</span></a>
+                    </li>
+                    <li><a href="#" class="icon brands fa-viber"><span
+                            class="label">Viber</span></a></li>
+                    <li><a href="#" class="icon brands fa-skype"><span
+                            class="label">Skype</span></a></li>
+                </ul>
             </header>
 
             <!-- Banner -->
@@ -45,17 +46,18 @@
                         <h2>Вводная часть</h2>
                         <p>Постановка задачи и создание структуры</p>
                     </header>
-                    <p>Если коротко, то задача заключается в автоматизации развертывания приложений на Laravel
-                        и среды их исполнения в Docker контейнерах, изолированно от ОС. Будем рассматривать по
-                        отдельности развертывание на локальном компьютере и на VPS. Отличие, главным образом,
-                        будет заключаться в реализации протокола HTTPS, поскольку для VPS мы получаем сертификаты
-                        на реальный домен от <a href="https://letsencrypt.org/">Let's Encrypt</a>, а для локального
-                        хоста мы создаем локальный центр сертификации который будет нам генерировать сертификаты
-                        локального доверия для локальных доменов, определенных в известном нам файле
-                        <strong><i>/etc/hosts</i></strong>. Поможет нам в этом
-                        <a href="https://github.com/FiloSottile/mkcert">Mkcert</a>. Сразу хочу обратить внимание на
-                        то, что я поленился запихнуть Mkcert в контейнер и он живет на локальном компьютере и
-                        запускается для генерации сертификатов там же.
+                    <p>Если коротко, то задача заключается в автоматизации развертывания
+                        <strong>Laravel</strong> приложений с несколькими доменами (локальными на компьютере и реальными
+                        на VPS) на <strong>Docker</strong> контейнерах с применением SSL. Развертывание на локальном
+                        компьютере и
+                        на VPS будем рассматривать отдельно. Отличие, главным образом, заключается в реализации
+                        SSL, поскольку для VPS мы получаем сертификаты на реальные домены от
+                        <a href="https://letsencrypt.org/">Let's Encrypt</a>, а для локального компьютера мы создаем
+                        локальный центр сертификации который будет нам генерировать сертификаты локального доверия
+                        для локальных доменов, определенных в известном нам файле <strong><i>/etc/hosts</i></strong>.
+                        Поможет нам в этом инструмент <a href="https://github.com/FiloSottile/mkcert">Mkcert</a>.
+                        Сразу хочу обратить внимание на то, что я поленился запихнуть его в контейнер и он живет на
+                        локальном компьютере и запускается для генерации сертификатов там же.
                     </p>
                     <p>Прежде чем приступить к решению задачи, определим требования к локальному компьютеру или
                         VPS. Все описанное ниже было протестировано на OS Linux (Ubuntu 18), на других ОS возможны
@@ -65,43 +67,52 @@
                     <div class="col-6 col-12-small">
                         <h4>На компьютере или VPS должны быть</h4>
                         <ul>
-                            <li>OS Linux</li>
-                            <li>Docker версия 19.03.0 и выше </li>
-                            <li>Docker Compose версия 1.25.0 и выше</li>
-                            <li>Система управления версиями Git</li>
+                            <li><strong>OS Linux</strong></li>
+                            <li><strong>Docker</strong> версия 19.03.0 и выше</li>
+                            <li><strong>Docker Compose</strong> версия 1.25.0 и выше</li>
+                            <li>Система управления версиями <strong>Git</strong></li>
+                            <li>Инструмент <strong>Mkcert</strong> -
+                                <strong style="color: red"> только для локального компьютера!!!</strong>
+                            </li>
                         </ul>
                     </div>
                     <p>Список задач можно представить следующим образом</p>
                     <div class="col-6 col-12-small">
                         <h4>Список задач</h4>
                         <ul>
-                            <li>Размещение нескольких доменов.</li>
-                            <li>Работа по HTTPS протоколу.</li>
-                            <li>Создание необходимых для приложения Laravel сервисов.</li>
+                            <li>Использование нескольких доменов.</li>
+                            <li>Применение <strong>SSL</strong></li>
+                            <li>Развертывание <strong>Laravel</strong> приложений на
+                                <strong>Docker</strong> контейнерах.
+                            </li>
                         </ul>
                     </div>
-                    <p>Первые две задачи решаются с помощью nginx reverse-proxy, который, естественно, запустим
-                        в docker контейнере. Он слушает 80 и 443 порты и принимает все запросы. Его задача
-                        проверить сертификат и перенаправить запрос к приложению, в соответствии с указанным в
-                        запросе доменом. Третья задача так же решается запуском нескольких docker контейнеров
-                        каждый из которых отвечает за отдельный сервис (nginx, mysql, php-fpm, node.js и проч.)
-                        для конкретного Laravel приложения.
+                    <p>Первые две задачи решаются с помощью <strong>reverse-proxy</strong>, который, естественно,
+                        запустим
+                        в <strong>Docker</strong> контейнере. Он слушает <strong>80</strong> и <strong>443</strong>
+                        порты и
+                        принимает все запросы. Его задача проверить сертификат и перенаправить запрос к
+                        приложению, в соответствии с указанным в запросе доменом. Третья задача решается
+                        запуском нескольких docker контейнеров каждый из которых отвечает за отдельный сервис
+                        (<strong>nginx</strong>, <strong>mysql</strong>, <strong>php-fpm</strong>,
+                        <strong>node.js</strong> и проч.) для конкретного Laravel приложения.
                     </p>
                     <h4>Функциональная схема</h4>
                     <div class="box">
-                        <span class="image"><img src="images/full-docker-laravel.jpg" alt="" /></span>
+                        <span class="image"><img src="images/full-docker-laravel.jpg" alt=""/></span>
                     </div>
 
                     <h4>Файловая структура</h4>
                     <div class="box">
-                        <span class=""><img src="images/file-structure.png" alt="" /></span>
+                        <span class=""><img src="images/file-structure.png" alt=""/></span>
                     </div>
                     <p>Так выглядит файловая структура в общем случае. Конкретно для локального сервера и для
-                        VPS будут свои нюансы о которых поговорим отдельно для каждого случая чуть позже</p>
+                        VPS будут свои подробности внутри папок о которых поговорим отдельно в соответствующих
+                        разделах</p>
                     <ul class="alt">
                         <li>Все проекты собраны в папке <i><strong>my-projects</strong></i></li>
                         <li>
-                            Файлы для запуска контейнера <strong>reverse-proxy</strong> собраны в папке
+                            Файлы для запуска контейнера <strong>reverse proxy</strong> собраны в папке
                             <i><strong>docker-reverse-proxy</strong></i>
                         </li>
                         <li>Каждый проект лежит в отдельной папке <i><strong>project-1,2,3</strong></i></li>
@@ -113,6 +124,49 @@
                             <i><strong>laravel-app-1,2,3</strong></i>
                         </li>
                     </ul>
+                    <div class="row">
+                    <div class="col-6 col-12-small">
+                        <h4>Порядок развертывания</h4>
+                        <div class="table-wrapper">
+                            <table class="alt">
+                                <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>Local</th>
+                                    <th>VPS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1.</td>
+                                    <td>
+                                        <a href="laravel-local.html">
+                                            Laravel приложение локально
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="laravel-vps.html">
+                                            Laravel приложение на VPS
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2.</td>
+                                    <td>
+                                        <a href="reverse-proxy-local.html">
+                                            Reverse proxy локально
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="reverse-proxy-vps.html">
+                                            Reverse proxy на VPS
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </section>
 
@@ -129,35 +183,23 @@
                     <h2>Меню</h2>
                 </header>
                 <ul>
-                    <li><a href="index.html">Вводная часть</a></li>
-                    <li><a href="generic.html">Generic</a></li>
-                    <li><a href="elements.html">Elements</a></li>
+                    <li><a style="color: red" href="index.html">Вводная часть</a></li>
                     <li>
-                        <span class="opener">Submenu</span>
+                        <span class="opener">Reverse proxy</span>
                         <ul>
-                            <li><a href="#">Lorem Dolor</a></li>
-                            <li><a href="#">Ipsum Adipiscing</a></li>
-                            <li><a href="#">Tempus Magna</a></li>
-                            <li><a href="#">Feugiat Veroeros</a></li>
+                            <li><a href="reverse-proxy-local.html">Локальный сервер</a></li>
+                            <li><a href="reverse-proxy-vps.html">VPS</a></li>
                         </ul>
                     </li>
-<!--                    <li><a href="#">Etiam Dolore</a></li>-->
-<!--                    <li><a href="#">Adipiscing</a></li>-->
                     <li>
-                        <span class="opener">Another Submenu</span>
+                        <span class="opener">Laravel на Docker</span>
                         <ul>
-                            <li><a href="#">Lorem Dolor</a></li>
-                            <li><a href="#">Ipsum Adipiscing</a></li>
-                            <li><a href="#">Tempus Magna</a></li>
-                            <li><a href="#">Feugiat Veroeros</a></li>
+                            <li><a href="laravel-local.html">Локальный сервер</a></li>
+                            <li><a href="laravel-vps.html">VPS</a></li>
                         </ul>
                     </li>
-<!--                    <li><a href="#">Maximus Erat</a></li>-->
-<!--                    <li><a href="#">Sapien Mauris</a></li>-->
-<!--                    <li><a href="#">Amet Lacinia</a></li>-->
                 </ul>
             </nav>
-
 
             <!-- Section -->
             <section>

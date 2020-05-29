@@ -1,0 +1,326 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+    <title>Laravel by Docker</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <link rel="stylesheet" href="assets/css/main.css"/>
+</head>
+<body class="is-preload">
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            <header id="header">
+                <a href="index.html" class="logo"><strong>AS-Programmer</strong>
+                    Laravel и среда исполнения на Docker</a>
+                <ul class="icons">
+                    <li><a href="https://t.me/Andrey_Sunday" class="icon brands fa-telegram"><span
+                            class="label">Telegram</span></a></li>
+                    <li><a href="https://facebook.com/andrey.voskresenskiy" class="icon brands fa-facebook-f"><span
+                            class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon brands fa-whatsapp">
+                        <span class="label">WhatsApp</span></a>
+                    </li>
+                    <li><a href="#" class="icon brands fa-viber"><span
+                            class="label">Viber</span></a></li>
+                    <li><a href="https://join.skype.com/invite/ccWntJC3fvwv" class="icon brands fa-skype"><span
+                            class="label">Skype</span></a></li>
+                </ul>
+            </header>
+
+            <!-- Banner -->
+            <section id="banner">
+                <div class="content">
+                    <header class="major">
+                        <h2><strong>Laravel</strong> на <strong>Docker</strong> контейнерах</h2>
+                        <p>Как запустить <strong>Laravel</strong> приложение на <strong>Docker</strong> контейнерах</p>
+                    </header>
+                    <p>Чтобы установить фреймворк <strong>Laravel</strong>, необходимо иметь, как минимум
+                        следующие сервисы:</p>
+                    <ul>
+                        <li>Веб сервер, в нашем случае это <strong>Nginx</strong></li>
+                        <li><strong>php-fpm</strong> для обрботки скриптов <strong>PHP</strong></li>
+                        <li>базу данных <strong>MySQL</strong></li>
+                        <li><strong>Node.js</strong> для работы с фронтендом</li>
+                    </ul>
+                    <p>Каждый сервис будет вполняться в отдельном контейнере и в случае если понадобится еще
+                        какой-нибудь (например <strong>Redis</strong>) мы его так же запустим в отдельном контейнере.
+                        Управлять и конфигурировать эти контейнеры будет <strong>Docker Compose</strong>. Чтобы не
+                        писать каждый раз все с нуля, я подготовил стандартный набор контейнеров для
+                        <strong>Laravel</strong>
+                        приложения, положил его в <a href="https://github.com/acwstudio/laravel-docker">репозиторий</a>.
+                    </p>
+                    <p>
+                        Клонируйте данный <a href="https://github.com/acwstudio/laravel-docker">репозиторий</a> в папку
+                        <i><strong>~/my-projects/project-1/laravel-docker</strong></i>
+                    </p>
+                    <p>
+                        <code>cd ~/my-projects/project-1</code><br>
+                        <code>git clone https://github.com/acwstudio/laravel-docker laravel-docker-1</code><br>
+                        <code>cd laravel-docker-1</code>
+                    </p>
+                    <p>Внутри папки <i><strong>~/my-projects/project-1/laravel-docker-1</strong></i> будет
+                        следующая файловая структура</p>
+                    <div class="box">
+                        <span class=""><img src="images/laravel-docker-1.png" alt=""/></span>
+                    </div>
+                    <p>Внутри папки <i><strong>~/my-projects/project-1/laravel-docker-1</strong></i> нам интересны
+                        следующие папки и файлы</p>
+                    <div class="row">
+                        <div class="col-10 col-12-small">
+                            <div class="table-wrapper">
+                                <table class="alt">
+                                    <tbody>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>
+                                            <strong><i>data/db/mysql/</i></strong>
+                                        </td>
+                                        <td>
+                                            <strong>Volume</strong> с базой данных из контейнера <strong>MySQL</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2.</td>
+                                        <td>
+                                            <strong><i>data/redis/</i></strong>
+                                        </td>
+                                        <td>
+                                            <strong>Volume</strong> с базой данных из контейнера <strong>Redis</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3.</td>
+                                        <td>
+                                            <strong><i>.env.example</i></strong>
+                                        </td>
+                                        <td>
+                                            Основа для создания своего <strong>.env</strong> файла
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4.</td>
+                                        <td>
+                                            <strong><i>etc/db/mysql/</i></strong>
+                                        </td>
+                                        <td>
+                                            <strong>Volume</strong> c конфигом для контейнера <strong>MySQL</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>5.</td>
+                                        <td>
+                                            <strong><i>etc/nginx/conf.d/</i></strong>
+                                        </td>
+                                        <td>
+                                            <strong>Volume</strong> c конфигом для контейнера <strong>Nginx</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>6.</td>
+                                        <td>
+                                            <strong><i>etc/php/php.ini</i></strong>
+                                        </td>
+                                        <td>
+                                            <strong>Volume</strong> c конфигом для контейнера <strong>PHP</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>7.</td>
+                                        <td>
+                                            <strong><i>etc/php/Dockerfile</i></strong>
+                                        </td>
+                                        <td>
+                                            Создание <strong>image</strong> для контейнера <strong>PHP</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>8.</td>
+                                        <td>
+                                            <strong><i>etc/redis/</i></strong>
+                                        </td>
+                                        <td>
+                                            Конфиг для <strong>Redis</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>9.</td>
+                                        <td>
+                                            <strong><i>etc/redis/Dockerfile</i></strong>
+                                        </td>
+                                        <td>
+                                            Создание <strong>image</strong> для контейнера <strong>Redis</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10.</td>
+                                        <td>
+                                            <strong><i>example-files/docker-compose.yml.example</i></strong>
+                                        </td>
+                                        <td>
+                                            Основа для <strong>docker-compose.yml</strong> файла
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>11.</td>
+                                        <td>
+                                            <strong><i>example-files/laravel.conf.example</i></strong>
+                                        </td>
+                                        <td>
+                                            Основа для <strong>Nginx</strong> конфига
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>12.</td>
+                                        <td>
+                                            <strong><i>example-files/my.cnf.example</i></strong>
+                                        </td>
+                                        <td>
+                                            Основа для <strong>MySQL</strong> конфига
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>13.</td>
+                                        <td>
+                                            <strong><i>example-files/php.ini.example</i></strong>
+                                        </td>
+                                        <td>
+                                            Основа для <strong>PHP</strong> конфига
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>14.</td>
+                                        <td>
+                                            <strong><i>example-files/redis.conf.example</i></strong>
+                                        </td>
+                                        <td>
+                                            Основа для <strong>Redis</strong> конфига
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>15.</td>
+                                        <td>
+                                            <strong><i>laravel-app/</i></strong>
+                                        </td>
+                                        <td>
+                                            <strong>Volume</strong> c кодом <strong>Laravel</strong> приложения для
+                                            контейнеров <strong>PHP</strong> и <strong>Nginx</strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-7 col-12-small">
+                            <p>Произведем необходимые настройки</p>
+                            <ol>
+                                <li>
+                                    В папке <strong><i>laravel-app/</i></strong> создадим симлинк
+                                    <strong>project</strong>
+                                    на код <strong>Laravel</strong> приложения.<br>
+                                    <code>cd ~/my-projects/project-1/laravel-docker-1</code><br>
+                                    <code>ln -s ~/my-projects/project-1/laravel-app-1 project</code>
+                                </li>
+                                <li>
+                                    Сделаем копию файла <strong><i>.env.example</i></strong> под именем
+                                    <strong><i>.env</i></strong>
+                                    и откроем для редактирования<br>
+                                    <code>cp .env.example .env</code><br>
+                                    <code>nano .env</code><br>
+                                    Оставляем только указанные ниже строки, остальное комментим или удаляем <br>
+                                    <code># App settings</code> <br>
+                                    <code>APP_NAME=LarApp1</code> <br>
+                                    <code>APP_PATH=./laravel-app/project</code> <br>
+                                    <code># Port Mappings</code> <br>
+                                    <code>PORT_DATABASE=3300</code> <br>
+                                    <code>PORT_HTTP=8000</code> <br>
+                                    <code>PORT_HTTPS=8100</code> <br>
+                                    <code># mysql settings</code> <br>
+                                    <code>MYSQL_DATABASE=db_1</code> <br>
+                                    <code>MYSQL_ROOT_USER=root</code> <br>
+                                    <code>MYSQL_ROOT_PASSWORD=root</code> <br>
+                                    <code>MYSQL_USER=dev</code> <br>
+                                    <code>MYSQL_PASSWORD=dev</code> <br>
+                                </li>
+                                <li></li>
+                                <li></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="inner">
+
+            <!-- Menu -->
+            <nav id="menu">
+                <header class="major">
+                    <h2>Меню</h2>
+                </header>
+                <ul>
+                    <li><a href="index.html">Вводная часть</a></li>
+                    <li>
+                        <span class="opener">Reverse proxy</span>
+                        <ul>
+                            <li><a href="reverse-proxy-local.html">Локальный сервер</a></li>
+                            <li><a href="reverse-proxy-vps.html">VPS</a></li>
+                        </ul>
+                    </li>
+                    <li><a style="color: red" href="laravel-docker.html">Laravel на Docker</a></li>
+                </ul>
+            </nav>
+
+            <!-- Section -->
+            <section>
+                <header class="major">
+                    <h2>Get in touch</h2>
+                </header>
+                <p>Sed varius enim lorem ullamcorper dolore aliquam aenean ornare velit lacus, ac varius enim lorem
+                    ullamcorper dolore. Proin sed aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus
+                    aliquam.</p>
+                <ul class="contact">
+                    <li class="icon solid fa-envelope"><a href="#">information@untitled.tld</a></li>
+                    <li class="icon solid fa-phone">(000) 000-0000</li>
+                    <li class="icon solid fa-home">1234 Somewhere Road #8254<br/>
+                        Nashville, TN 00000-0000
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Footer -->
+            <footer id="footer">
+                <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>.
+                    Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+            </footer>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>

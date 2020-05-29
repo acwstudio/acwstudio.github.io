@@ -25,16 +25,16 @@
                 <a href="index.html" class="logo"><strong>AS-Programmer</strong>
                     Laravel и среда исполнения на Docker</a>
                 <ul class="icons">
-                    <li><a href="#" class="icon brands fa-telegram"><span
+                    <li><a href="https://t.me/Andrey_Sunday" class="icon brands fa-telegram"><span
                             class="label">Telegram</span></a></li>
-                    <li><a href="#" class="icon brands fa-facebook-f"><span
+                    <li><a href="https://facebook.com/andrey.voskresenskiy" class="icon brands fa-facebook-f"><span
                             class="label">Facebook</span></a></li>
                     <li><a href="#" class="icon brands fa-whatsapp">
                         <span class="label">WhatsApp</span></a>
                     </li>
                     <li><a href="#" class="icon brands fa-viber"><span
                             class="label">Viber</span></a></li>
-                    <li><a href="#" class="icon brands fa-skype"><span
+                    <li><a href="https://join.skype.com/invite/ccWntJC3fvwv" class="icon brands fa-skype"><span
                             class="label">Skype</span></a></li>
                 </ul>
             </header>
@@ -95,7 +95,7 @@
                         приложению, в соответствии с указанным в запросе доменом. Третья задача решается
                         запуском нескольких docker контейнеров каждый из которых отвечает за отдельный сервис
                         (<strong>nginx</strong>, <strong>mysql</strong>, <strong>php-fpm</strong>,
-                        <strong>node.js</strong> и проч.) для конкретного Laravel приложения.
+                        <strong>node.js</strong> и проч.) для конкретного <strong>Laravel</strong> приложения.
                     </p>
                     <h4>Функциональная схема</h4>
                     <div class="box">
@@ -124,48 +124,44 @@
                             <i><strong>laravel-app-1,2,3</strong></i>
                         </li>
                     </ul>
+                    <p>Подготовьте эту файловую структуру у себя на локальном компьютере или VPS, чтобы в дальнейшем
+                        заполнить ее соответствующим содержанием. Названия папок можете поменять по своему
+                        усмотрению, но тогда не забывайте потом подставлять их вместо указанных здесь</p>
                     <div class="row">
-                    <div class="col-6 col-12-small">
-                        <h4>Порядок развертывания</h4>
-                        <div class="table-wrapper">
-                            <table class="alt">
-                                <thead>
-                                <tr>
-                                    <th>№</th>
-                                    <th>Local</th>
-                                    <th>VPS</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>
-                                        <a href="laravel-local.html">
-                                            Laravel приложение локально
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="laravel-vps.html">
-                                            Laravel приложение на VPS
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2.</td>
-                                    <td>
-                                        <a href="reverse-proxy-local.html">
-                                            Reverse proxy локально
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="reverse-proxy-vps.html">
-                                            Reverse proxy на VPS
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
+                        <div class="col-6 col-12-small">
+                            <h4>Порядок развертывания</h4>
+                            <div class="table-wrapper">
+                                <table class="alt">
+                                    <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>Local</th>
+                                        <th>VPS</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>
+                                            <a href="laravel-docker.html">Laravel приложение локально</a>
+                                        </td>
+                                        <td>
+                                            <a href="laravel-docker.html">Laravel приложение на VPS</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2.</td>
+                                        <td>
+                                            <a href="reverse-proxy-local.html">Reverse proxy локально</a>
+                                        </td>
+                                        <td>
+                                            <a href="reverse-proxy-vps.html">Reverse proxy на VPS</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                    </div>
+
                     </div>
                 </div>
             </section>
@@ -191,13 +187,7 @@
                             <li><a href="reverse-proxy-vps.html">VPS</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <span class="opener">Laravel на Docker</span>
-                        <ul>
-                            <li><a href="laravel-local.html">Локальный сервер</a></li>
-                            <li><a href="laravel-vps.html">VPS</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="laravel-docker.html">Laravel на Docker</a></li>
                 </ul>
             </nav>
 

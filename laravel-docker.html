@@ -46,24 +46,24 @@
                         <h2><strong>Laravel</strong> на <strong>Docker</strong> контейнерах</h2>
                         <p>Как запустить <strong>Laravel</strong> приложение на <strong>Docker</strong> контейнерах</p>
                     </header>
-                    <p>Чтобы установить фреймворк <strong>Laravel</strong>, необходимо иметь, как минимум
-                        следующие сервисы:</p>
+                    <p>Определим наш минимальный набор сервисов, необходимых для работы с фреймворком
+                        <strong>Laravel</strong>:</p>
                     <ul>
                         <li>Веб сервер, в нашем случае это <strong>Nginx</strong></li>
-                        <li><strong>php-fpm</strong> для обрботки скриптов <strong>PHP</strong></li>
-                        <li>базу данных <strong>MySQL</strong></li>
+                        <li><strong>php-fpm</strong> для обработки скриптов <strong>PHP</strong></li>
+                        <li>база данных <strong>MySQL</strong></li>
+                        <li>база данных <strong>Redis</strong></li>
                         <li><strong>Node.js</strong> для работы с фронтендом</li>
                     </ul>
-                    <p>Каждый сервис будет вполняться в отдельном контейнере и в случае если понадобится еще
-                        какой-нибудь (например <strong>Redis</strong>) мы его так же запустим в отдельном контейнере.
-                        Управлять и конфигурировать эти контейнеры будет <strong>Docker Compose</strong>. Чтобы не
-                        писать каждый раз все с нуля, я подготовил стандартный набор контейнеров для
-                        <strong>Laravel</strong>
-                        приложения, положил его в <a href="https://github.com/acwstudio/laravel-docker">репозиторий</a>.
+                    <p>Каждый сервис будет выполняться в отдельном контейнере и в случае если понадобится еще
+                        какой-нибудь (например <strong>phpMyAdmin</strong>) мы его так же сможем запустить в отдельном
+                        контейнере. Управлять и конфигурировать эти контейнеры будет <strong>Docker Compose</strong>.
+                        Чтобы не писать каждый раз все с нуля, базовый вариант находится в
+                        <a href="https://github.com/acwstudio/laravel-docker">репозитории</a>.
                     </p>
                     <p>
                         Клонируйте данный <a href="https://github.com/acwstudio/laravel-docker">репозиторий</a> в папку
-                        <i><strong>~/my-projects/project-1/laravel-docker</strong></i>
+                        <i><strong>~/my-projects/project-1/laravel-docker-1</strong></i>
                     </p>
                     <p>
                         <code>cd ~/my-projects/project-1</code><br>
@@ -75,8 +75,6 @@
                     <div class="box">
                         <span class=""><img src="images/laravel-docker-1.png" alt=""/></span>
                     </div>
-                    <p>Внутри папки <i><strong>~/my-projects/project-1/laravel-docker-1</strong></i> нам интересны
-                        следующие папки и файлы</p>
                     <div class="row">
                         <div class="col-10 col-12-small">
                             <div class="table-wrapper">
@@ -103,15 +101,6 @@
                                     <tr>
                                         <td>3.</td>
                                         <td>
-                                            <strong><i>.env.example</i></strong>
-                                        </td>
-                                        <td>
-                                            Основа для создания своего <strong>.env</strong> файла
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>4.</td>
-                                        <td>
                                             <strong><i>etc/db/mysql/</i></strong>
                                         </td>
                                         <td>
@@ -119,7 +108,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>5.</td>
+                                        <td>4.</td>
                                         <td>
                                             <strong><i>etc/nginx/conf.d/</i></strong>
                                         </td>
@@ -128,7 +117,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>6.</td>
+                                        <td>5.</td>
                                         <td>
                                             <strong><i>etc/php/php.ini</i></strong>
                                         </td>
@@ -137,7 +126,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>7.</td>
+                                        <td>6.</td>
                                         <td>
                                             <strong><i>etc/php/Dockerfile</i></strong>
                                         </td>
@@ -146,7 +135,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>8.</td>
+                                        <td>7.</td>
                                         <td>
                                             <strong><i>etc/redis/</i></strong>
                                         </td>
@@ -155,7 +144,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>9.</td>
+                                        <td>8.</td>
                                         <td>
                                             <strong><i>etc/redis/Dockerfile</i></strong>
                                         </td>
@@ -164,12 +153,21 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>10.</td>
+                                        <td>9.</td>
                                         <td>
                                             <strong><i>example-files/docker-compose.yml.example</i></strong>
                                         </td>
                                         <td>
                                             Основа для <strong>docker-compose.yml</strong> файла
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10.</td>
+                                        <td>
+                                            <strong><i>example-files/.env.example</i></strong>
+                                        </td>
+                                        <td>
+                                            Основа для создания своего <strong>.env</strong> файла
                                         </td>
                                     </tr>
                                     <tr>
@@ -223,21 +221,28 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-7 col-12-small">
-                            <p>Произведем необходимые настройки</p>
+                        <div class="col-10 col-12-small">
+                            <p>Предварительные действия</p>
                             <ol>
                                 <li>
-                                    В папке <strong><i>laravel-app/</i></strong> создадим симлинк
-                                    <strong>project</strong>
-                                    на код <strong>Laravel</strong> приложения.<br>
-                                    <code>cd ~/my-projects/project-1/laravel-docker-1</code><br>
+                                    В папке <strong><i>laravel-app/</i></strong> создаем симлинк
+                                    <strong>project</strong> на код <strong>Laravel</strong> приложения.<br>
+                                    <code>cd ~/my-projects/project-1/laravel-docker-1/laravel-app</code><br>
                                     <code>ln -s ~/my-projects/project-1/laravel-app-1 project</code>
                                 </li>
                                 <li>
-                                    Сделаем копию файла <strong><i>.env.example</i></strong> под именем
-                                    <strong><i>.env</i></strong>
-                                    и откроем для редактирования<br>
-                                    <code>cp .env.example .env</code><br>
+                                    Копируем файл <strong><i>example-files/docker-compose.yml.example</i></strong> в
+                                    корневую директорию под именем <strong><i>docker-compose.yml</i></strong><br>
+                                    <code>cd ../</code><br>
+                                    <code>cp example-files/docker-compose.yml.example docker-compose.yml</code><br>
+                                    <code>nano docker-compose.yml</code><br>
+                                    Здесь вы можете добавить или удалить сервис. Например, в продакшен точно не нужен
+                                    <strong>phpMyAdmin</strong>. Для демонстрации не будем ничего удалять.
+                                </li>
+                                <li>
+                                    Копируем файл <strong><i>example-files/.env.example</i></strong> в корневую
+                                    директорию под именем <strong><i>.env</i></strong> и открываем для редактирования<br>
+                                    <code>cp example-files/.env.example .env</code><br>
                                     <code>nano .env</code><br>
                                     Оставляем только указанные ниже строки, остальное комментим или удаляем <br>
                                     <code># App settings</code> <br>
@@ -245,18 +250,58 @@
                                     <code>APP_PATH=./laravel-app/project</code> <br>
                                     <code># Port Mappings</code> <br>
                                     <code>PORT_DATABASE=3300</code> <br>
+                                    <code>PORT_PHPMYADMIN=8080</code> <br>
                                     <code>PORT_HTTP=8000</code> <br>
                                     <code>PORT_HTTPS=8100</code> <br>
+                                    <code>PORT_REDIS=6379</code> <br>
                                     <code># mysql settings</code> <br>
                                     <code>MYSQL_DATABASE=db_1</code> <br>
                                     <code>MYSQL_ROOT_USER=root</code> <br>
                                     <code>MYSQL_ROOT_PASSWORD=root</code> <br>
                                     <code>MYSQL_USER=dev</code> <br>
                                     <code>MYSQL_PASSWORD=dev</code> <br>
+                                    <code># Docker Compose Environment Variables</code> <br>
+                                    <code>PHP_VER_FPM=7.2</code> <br>
                                 </li>
-                                <li></li>
-                                <li></li>
+                                <li>Копируем файл <strong><i>example-files/laravel.conf.example</i></strong> в
+                                    соответствующую директорию под именем
+                                    <strong><i>etc/nginx/conf.d/laravel.conf</i></strong><br>
+                                    <code>cp example-files/laravel.conf.example etc/nginx/conf.d/laravel.conf</code><br>
+                                    <code>nano etc/nginx/conf.d/laravel.conf</code><br>
+                                    Здесь нас все устраивает и ничего менять не будем
+                                </li>
+                                <li>Копируем файл <strong><i>example-files/my.cnf.example</i></strong> в
+                                    соответствующую директорию под именем
+                                    <strong><i>etc/db/mysql/my.cnf</i></strong><br>
+                                    <code>cp example-files/my.cnf.example etc/db/mysql/my.cnf</code><br>
+                                    <code>nano etc/db/mysql/my.cnf</code><br>
+                                    Здесь тоже все устраивает
+                                </li>
+                                <li>Копируем файл <strong><i>example-files/php.ini.example</i></strong> в
+                                    соответствующую директорию под именем
+                                    <strong><i>etc/php/php.ini</i></strong><br>
+                                    <code>cp example-files/php.ini.example etc/php/php.ini</code><br>
+                                    <code>nano etc/php/php.ini</code><br>
+                                    Ничего не меняем
+                                </li>
+                                <li>Копируем файл <strong><i>example-files/redis.conf.example</i></strong> в
+                                    соответствующую директорию под именем
+                                    <strong><i>etc/redis/redis.conf</i></strong><br>
+                                    <code>cp example-files/redis.conf.example etc/redis/redis.conf</code><br>
+                                    <code>nano etc/redis/redis.conf</code><br>
+                                    Здесь мы установим пароль. Файл содержит много справочной информации, поэтому надо
+                                    приложить некоторые усилия, чтобы найти строку <strong>requirepass foobared</strong>
+                                    (~770 line). Расскоментируйте и замените <strong>foobared</strong> на свой пароль. Мы установим
+                                    <strong>my_redis</strong>
+                                </li>
                             </ol>
+                            <p>
+                                На этом предварительные действия закончены.
+                            </p>
+                            <p>
+                                После проведения подготовки, запускаем <strong>docker-compose.yml</strong><br>
+                                <code>docker-compose up -d</code><br>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -276,6 +321,7 @@
                 </header>
                 <ul>
                     <li><a href="index.html">Вводная часть</a></li>
+                    <li><a style="color: red" href="laravel-docker.html">Laravel на Docker</a></li>
                     <li>
                         <span class="opener">Reverse proxy</span>
                         <ul>
@@ -283,7 +329,6 @@
                             <li><a href="reverse-proxy-vps.html">VPS</a></li>
                         </ul>
                     </li>
-                    <li><a style="color: red" href="laravel-docker.html">Laravel на Docker</a></li>
                 </ul>
             </nav>
 
@@ -306,7 +351,8 @@
 
             <!-- Footer -->
             <footer id="footer">
-                <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>.
+                <p class="copyright">&copy; Untitled. All rights reserved.
+                    Demo Images: <a href="https://unsplash.com">Unsplash</a>.
                     Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
             </footer>
 

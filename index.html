@@ -118,15 +118,23 @@
                         <li>Каждый проект лежит в отдельной папке <i><strong>project-1,2,3</strong></i></li>
                         <li>В каждом проекте есть своя папка с файлами для запуска контейнеров обеспечивающих
                             создание среды исполнения конкретного приложения Laravel
-                            <i><strong>laravel-docker</strong></i>
+                            <i><strong>laravel-docker -1,2,3</strong></i>
                         </li>
                         <li>В каждом проекте есть своя папка с кодом конкретного приложения Laravel
                             <i><strong>laravel-app-1,2,3</strong></i>
                         </li>
                     </ul>
                     <p>Подготовьте эту файловую структуру у себя на локальном компьютере или VPS, чтобы в дальнейшем
-                        заполнить ее соответствующим содержанием. Названия папок можете поменять по своему
-                        усмотрению, но тогда не забывайте потом подставлять их вместо указанных здесь</p>
+                        заполнить ее соответствующим содержанием. Но прямо сейчас сделаем заглушки, вместо реальных
+                        <strong>Laravel</strong> приложений, чтобы иметь возможность сразу проверить работу
+                        <strong>Docker</strong> контейнеров.<br>
+                        <code>cd ~/my-projects/project-1/laravel-app-1</code><br>
+                        <code>mkdir public</code><br>
+                        <code>nano public/index.html</code><br>
+                        вставим в <strong>index.html</strong> строку<br>
+                        <code>&lt;h1&gt;Hello, laravel-app-1&lt;/h1&gt;</code><br>
+                        повторить для <strong>laravel-app-2</strong> и <strong>laravel-app-3</strong>
+                    </p>
                     <div class="row">
                         <div class="col-6 col-12-small">
                             <h4>Порядок развертывания</h4>
@@ -180,6 +188,7 @@
                 </header>
                 <ul>
                     <li><a style="color: red" href="index.html">Вводная часть</a></li>
+                    <li><a href="laravel-docker.html">Laravel на Docker</a></li>
                     <li>
                         <span class="opener">Reverse proxy</span>
                         <ul>
@@ -187,7 +196,6 @@
                             <li><a href="reverse-proxy-vps.html">VPS</a></li>
                         </ul>
                     </li>
-                    <li><a href="laravel-docker.html">Laravel на Docker</a></li>
                 </ul>
             </nav>
 

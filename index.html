@@ -46,15 +46,17 @@
                         <h2>Вводная часть</h2>
                         <p>Постановка задачи и создание структуры</p>
                     </header>
-                    <p>Если коротко, то задача заключается в автоматизации развертывания
-                        <strong>Laravel</strong> приложений с несколькими доменами (локальными на компьютере и реальными
-                        на VPS) на <strong>Docker</strong> контейнерах с применением SSL. Развертывание на локальном
-                        компьютере и на VPS отличаются в реализации <strong>SSL</strong>. Отличие, заключается в том, что
-                        для VPS мы получаем сертификаты на реальные домены от
-                        <a href="https://letsencrypt.org/">Let's Encrypt</a>, а для локального компьютера мы с помощью
-                        <a href="https://github.com/FiloSottile/mkcert">Mkcert</a> создаем локальный центр сертификации
-                        который будет генерировать сертификаты локального доверия для локальных доменов, определенных в
-                        известном нам файле <strong><i>/etc/hosts</i></strong>.
+                    <p>
+                        Хочется автоматизировать развертывание среды исполнения для <strong>Laravel</strong> приложений.
+                        <br>
+                        На локальном окружении иметь возможность генерации локально-доверенных сертификатов с
+                        собственным центром сертификации для локальных доменов, определенных в файле
+                        <strong><i>/etc/hosts</i></strong> и обращаться к приложениям примерно так
+                        <strong><i>site-1.local</i></strong><br>
+                        На одном <strong>VPS</strong> иметь несколько <strong>Laravel</strong> приложений с получением
+                        бесплатных сертификатов от <a href="https://letsencrypt.org/">Let's Encrypt</a><br>
+                        Решить эти задачи, нам помогут <strong>nginx reverse proxy</strong>, <strong>Mkcert</strong>
+                        и <strong>Docker</strong>
                     </p>
                     <p>Прежде чем приступить к решению задачи, определим требования к локальному компьютеру или
                         VPS. Все описанное ниже было протестировано на OS Linux (Ubuntu 18), на других ОS возможны
@@ -68,32 +70,11 @@
                             <li><strong>Docker</strong> версия 19.03.0 +</li>
                             <li><strong>Docker Compose</strong> версия 1.25.0 +</li>
                             <li>Система управления версиями <strong>Git</strong></li>
-                            <li>Инструмент <strong>Mkcert</strong> -
+                            <li>Инструмент <a href="https://github.com/FiloSottile/mkcert">Mkcert</a> -
                                 <strong style="color: red"> только для локального компьютера!!!</strong>
                             </li>
                         </ul>
                     </div>
-                    <p>Список задач можно представить следующим образом</p>
-                    <div class="col-6 col-12-small">
-                        <h4>Список задач</h4>
-                        <ul>
-                            <li>Использование нескольких доменов.</li>
-                            <li>Применение <strong>SSL</strong></li>
-                            <li>Развертывание <strong>Laravel</strong> приложений на
-                                <strong>Docker</strong> контейнерах.
-                            </li>
-                        </ul>
-                    </div>
-                    <p>Первые две задачи решаются с помощью <strong>reverse-proxy</strong>, который, естественно,
-                        запустим
-                        в <strong>Docker</strong> контейнере. Он слушает <strong>80</strong> и <strong>443</strong>
-                        порты и
-                        принимает все запросы. Его задача проверить сертификат и перенаправить запрос к
-                        приложению, в соответствии с указанным в запросе доменом. Третья задача решается
-                        запуском нескольких docker контейнеров каждый из которых отвечает за отдельный сервис
-                        (<strong>nginx</strong>, <strong>mysql</strong>, <strong>php-fpm</strong>,
-                        <strong>node.js</strong> и проч.) для конкретного <strong>Laravel</strong> приложения.
-                    </p>
                     <h4>Функциональная схема</h4>
                     <div class="box">
                         <span class="image"><img src="images/full-docker-laravel.jpg" alt=""/></span>

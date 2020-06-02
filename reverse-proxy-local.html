@@ -44,13 +44,57 @@
                 <div class="content">
                     <header class="major">
                         <h2>Reverse proxy локальный</h2>
-                        <p>Как настроить reverse proxy с Docker, Nginx и Let's Encrypt</p>
+                        <p>Как настроить reverse proxy с Docker, Nginx и Mkcert</p>
                     </header>
-                    <p>В процессе описания решения поставленной задачи, настроим реальный
-                        <strong>reverse proxy</strong> на локальном компьютере. Чтобы можно было посмотреть
-                        <strong>reverse proxy</strong> в действии, нужно уже иметь пару-тройку приложений позади
-                        него. Как развернуть <strong>Laravel</strong> приложение с <strong>Docker</strong>
-                        контейнерами на локальном компьютере, смотрим <a href="laravel-docker.html">здесь</a>.
+                    <p>
+                        Нам понадобятся настроенный особым образом <strong>Nginx</strong> веб сервер и утилита
+                        <strong>Mkcert</strong> для генерации локально-доверенных сертификатов с собственным центром
+                        сертификации. Чтобы можно было сразу посмотреть <strong>reverse proxy</strong> в действии,
+                        нужно уже иметь пару-тройку приложений позади него. Как развернуть <strong>Laravel</strong>
+                        приложение с <strong>Docker</strong> контейнерами на локальном компьютере, смотрим
+                        <a href="laravel-docker.html">здесь</a>. <strong>Nginx</strong> веб сервер создадим и
+                        настроим в контейнере, а утилиту <strong>Mkcert</strong> установим непосредственно на
+                        локальном компьютере.
+                    </p>
+                    <h4>Установка утилиты <strong>Mkcert</strong></h4>
+                    <p>
+                        Начнем с установки <strong>certutil</strong>. Эта утилита работает из командной строки и
+                        может создавать и модифицировать сертификаты и базу данных с ключами.<br>
+                        <code>sudo apt-get update</code><br>
+                        <code>sudo apt install wget libnss3-tools</code><br>
+                        Теперь загрузим бинарный пакет <strong>mkcert</strong> из <strong>GitHub</strong> на
+                        момент написания статьи последняя версия <strong>v1.4.1</strong><br>
+                        <code>export VER="v1.4.1"</code><br>
+                        <code>wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/${VER}/mkcert-${VER}-linux-amd64</code><br>
+                        Сделаем файл исполняемым и поместим его в директорию <strong><i>/usr/local/bin</i></strong><br>
+                        <code>chmod +x mkcert</code><br>
+                        <code>sudo mv mkcert /usr/local/bin</code><br>
+                        На этом установка завершена. Cоздадим локальный <strong>CA (Certificate Authority)</strong><br>
+                        <code>mkcert -install</code><br>
+                        теперь мы можем простой командой <strong><i>mkcert name-1.local name-2.local ...</i></strong>
+                        сгенерировать <strong>SSL certificates</strong> для любого количества локальных доменов, но
+                        пока отложим это действие. Дело в том, что эта команда имеет ряд опций, указав которые мы
+                        можем задать нужную нам директорию и имена файлов <strong>SSL certificates</strong>. Директорию
+                        и имена файлов мы определим в настройках <strong>reverse proxy</strong>.
+                    </p>
+                    <h4><strong>Reverse proxy</strong> как это работает</h4>
+                    <p><strong>Reverse proxy</strong> это обычный <strong>Nginx</strong>, который слушает стандартные
+                        порты <strong>"80"</strong> и <strong>"443"</strong>, но настроен таким образом, чтобы
+                        транслировать запросы приложениям позади него, в соответствии с доменом. А также,
+                        преобразовывать все <strong>HTTP</strong> запросы в <strong>HTTPS</strong> и проверять
+                        сертификаты. Таким образом, в центре внимания оказываются конфигурационные файлы.
+                    </p>
+                    <p>
+                        Клонируем <strong>reverse proxy</strong> из <strong>GitHub</strong> репозитория<br>
+                        <code>cd ~/my-projects</code><br>
+                        <code>git clone https://github.com/acwstudio/nginx-reverse-proxy-ssl-local.git docker-reverse-proxy</code><br>
+                        <code>cd docker-reverse-proxy</code><br>
+                    </p>
+                    <p>
+                        <img src="images/docker-reverse-proxy.png">
+                    </p>
+                    <p>
+                        <img src="images/nginx.conf.files.png">
                     </p>
                 </div>
             </section>

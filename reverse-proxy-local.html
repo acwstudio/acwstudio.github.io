@@ -65,7 +65,8 @@
                         Теперь загрузим бинарный пакет <strong>mkcert</strong> из <strong>GitHub</strong> на
                         момент написания статьи последняя версия <strong>v1.4.1</strong><br>
                         <code>export VER="v1.4.1"</code><br>
-                        <code>wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/${VER}/mkcert-${VER}-linux-amd64</code><br>
+                        <code>wget -O mkcert
+                            https://github.com/FiloSottile/mkcert/releases/download/${VER}/mkcert-${VER}-linux-amd64</code><br>
                         Сделаем файл исполняемым и поместим его в директорию <strong><i>/usr/local/bin</i></strong><br>
                         <code>chmod +x mkcert</code><br>
                         <code>sudo mv mkcert /usr/local/bin</code><br>
@@ -87,18 +88,159 @@
                     <p>
                         Клонируем <strong>reverse proxy</strong> из <strong>GitHub</strong> репозитория<br>
                         <code>cd ~/my-projects</code><br>
-                        <code>git clone https://github.com/acwstudio/nginx-reverse-proxy-ssl-local.git docker-reverse-proxy</code><br>
+                        <code>git clone https://github.com/acwstudio/nginx-reverse-proxy-ssl-local.git
+                            docker-reverse-proxy</code><br>
                         <code>cd docker-reverse-proxy</code><br>
                     </p>
                     <p>
                         <img src="images/docker-reverse-proxy.png">
                     </p>
+                    <div class="row">
+                        <div class="col-10 col-12-small">
+                            <div class="table-wrapper">
+                                <table class="alt">
+                                    <tbody>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>
+                                            <strong><i>docker-compose.yml</i></strong>
+                                        </td>
+                                        <td>
+                                            Инструкции для запуска и управления контейнерами
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2.</td>
+                                        <td>
+                                            <strong><i>Makefile</i></strong>
+                                        </td>
+                                        <td>
+                                            Инструкция для запуска генерации сертификатов
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3.</td>
+                                        <td>
+                                            <strong><i>etc/ssl/private</i></strong>
+                                        </td>
+                                        <td>
+                                            Директория для размещения <strong>SSL certificates</strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <p>Обсудим содержимое директории <strong><i>etc/nginx</i></strong></p>
                     <p>
                         <img src="images/nginx.conf.files.png">
                     </p>
+                    <div class="row">
+                        <div class="col-12 col-12-small">
+                            <div class="table-wrapper">
+                                <table class="alt">
+                                    <tbody>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>
+                                            <strong><i>nginx.conf</i></strong>
+                                        </td>
+                                        <td>
+                                            Основной конфигурационный файл, в который так или иначе инклюдятся все
+                                            остальные файлы
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2.</td>
+                                        <td>
+                                            <strong><i>laravel-1.conf</i></strong><br>
+                                            <strong><i>laravel-2.conf</i></strong><br>
+                                            <strong><i>laravel-3.conf</i></strong><br>
+                                        </td>
+                                        <td>
+                                            Каждый из файлов, содержит блок, ответственный за селекцию и редирект
+                                            запроса к соответствующему приложению. Количество файлов зависит от
+                                            количества приложений позади <strong>reverse proxy</strong>. На каждый
+                                            файл создается симлинк, который инклюдится в
+                                            <strong><i>nginx.conf</i></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3.</td>
+                                        <td>
+                                            <strong><i>common.conf</i></strong><br>
+                                            <strong><i>common-location.conf</i></strong><br>
+                                            <strong><i>ssl.conf</i></strong>
+                                        </td>
+                                        <td>
+                                            Эти файлы содержат неизменные повторяющиеся блоки. Все три файла инклюдятся
+                                            в каждый <strong><i>laravel-1,2,3.conf</i></strong> файл, чтобы каждый раз
+                                            не писать там одни и те же блоки.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4.</td>
+                                        <td>
+                                            <strong><i>redirect.conf</i></strong><br>
+                                        </td>
+                                        <td>
+                                            Файл содержит блок, отвечающий за редирект <strong>HTTP</strong> в
+                                            <strong>HTTPS</strong>. Инклюдится прямо в <strong>nginx.conf</strong>.
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <p>
+                            Произведем некоторые предварительные настройки. Прежде всего создадим файл с блоком
+                            ответственным за селекцию и редирект запроса к приложению, развернутому в разделе
+                            <a href="laravel-docker.html">Laravel на Docker</a>. Для этого воспользуемся специально
+                            заготовленным шаблоном
+                            <strong><i>etc/nginx/conf.d/sires-available/service-name.conf.example</i></strong><br>
+                            <code>cd etc/nginx/conf.d/sites-available/</code><br>
+                            <code>cp service-name.conf.example laravel-1.conf</code><br>
+                            <code>cd ../sites-enabled</code><br>
+                            <code>ln -s ../sites-available/laravel-1.conf laravel-1.conf</code><br>
+                            <code>nano ../sites-available/laravel-1.conf</code><br>
+                            Это полученный файл<br>
+                            <script src="https://gist.github.com/acwstudio/3d84e2ef579325b36d3af0a27e4cd6bb.js">
+
+                            </script>
+                        </p>
+                        <div class="col-12">
+                            <p>
+                                <code>1 строка изменим <strong>MyApp</strong> на <strong>laravel-1</strong>
+                                </code><br>
+                                <code>3 строка изменим <strong>MyApp_nginx</strong> на <strong>LarApp1_nginx</strong>
+                                </code><br>
+                                <code>
+                                    9 строка изменим <strong>myapp.local</strong> на <strong>laravel-1.local</strong>
+                                </code><br>
+                                <code>15 строка изменим <strong>http://MyApp</strong> на <strong>http://laravel-1
+                                </strong><br></code>
+                            </p>
+                            <p>
+                                не забудьте добавить в файл <strong><i>/etc/hosts</i></strong> запись
+                                <strong>127.0.0.1    laravel-1.local</strong><br>
+                            </p>
+                            <p>
+                                Осталось сгенерировать <strong>SSL serificates</strong>, положить их в
+                                <strong><i>etc/ssl/private</i></strong> и запустить
+                                <strong><i>docker-compose.yml</i></strong>. Инструкция на генерацию сертификатов с
+                                указанием места расположения записана в <strong>Makefile</strong><br>
+                                <code>cd ~/my-projects/docker-reverse-proxy</code><br>
+                                <code>make init DOMENS=laravel-1.local</code><br>
+                                <code>docker-compose up -d</code><br>
+                            </p>
+                            <p>Набираем в браузере <strong><i>http://laravel-1.local</i></strong> и замочек на месте</p>
+                            <p>
+                                <img src="images/https.laravel-1.png">
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
             </section>
-
         </div>
     </div>
 
@@ -112,7 +254,7 @@
                     <h2>Меню</h2>
                 </header>
                 <ul>
-                    <li ><a href="index.html">Вводная часть</a></li>
+                    <li><a href="index.html">Вводная часть</a></li>
                     <li><a href="laravel-docker.html">Laravel на Docker</a></li>
                     <li>
                         <span class="opener active">Reverse-proxy</span>
@@ -129,21 +271,16 @@
                 <header class="major">
                     <h2>Get in touch</h2>
                 </header>
-                <p>Sed varius enim lorem ullamcorper dolore aliquam aenean ornare velit lacus, ac varius enim lorem
-                    ullamcorper dolore. Proin sed aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus
-                    aliquam.</p>
                 <ul class="contact">
-                    <li class="icon solid fa-envelope"><a href="#">information@untitled.tld</a></li>
-                    <li class="icon solid fa-phone">(000) 000-0000</li>
-                    <li class="icon solid fa-home">1234 Somewhere Road #8254<br/>
-                        Nashville, TN 00000-0000
-                    </li>
+                    <li class="icon solid fa-envelope"><a href="#">acwstudio2018@gmail.com</a></li>
+                    <li class="icon solid fa-phone">+7(921) 439-9531</li>
+                    <li class="icon solid fa-home">Russia, Saint-Petersburg<br/></li>
                 </ul>
             </section>
-
             <!-- Footer -->
             <footer id="footer">
-                <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>.
+                <p class="copyright">&copy; Untitled. All rights reserved.
+                    Demo Images: <a href="https://unsplash.com">Unsplash</a>.
                     Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
             </footer>
 

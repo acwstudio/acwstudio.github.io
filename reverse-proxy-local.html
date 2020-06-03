@@ -227,7 +227,8 @@
                                 Осталось сгенерировать <strong>SSL serificates</strong>, положить их в
                                 <strong><i>etc/ssl/private</i></strong> и запустить
                                 <strong><i>docker-compose.yml</i></strong>. Инструкция на генерацию сертификатов с
-                                указанием места расположения записана в <strong>Makefile</strong><br>
+                                указанием места расположения записана в <strong>Makefile</strong> при его запуске
+                                необходимо в <strong>DOMENS</strong> указать перечень доменов<br>
                                 <code>cd ~/my-projects/docker-reverse-proxy</code><br>
                                 <code>make init DOMENS=laravel-1.local</code><br>
                                 <code>docker-compose up -d</code><br>

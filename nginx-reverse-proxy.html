@@ -136,7 +136,8 @@
                     <blockquote>
                         Для удобства полная конфигурация разбита на несколько файлов, каждый из которых отвечает за
                         отдельные ее части. Потом эти файлы инклюдятся в определенной последовательности и
-                        комбинациях в один <strong>nginx.conf</strong> файл.
+                        комбинациях в один <strong>nginx.conf</strong> файл. Подробнее можно псомотреть
+                        <a href="#config">ниже</a>
                     </blockquote>
                     <p>
                         <code>cd etc/nginx/conf.d/sites-available/</code><br>
@@ -175,6 +176,82 @@
                     </p>
                     <a id="vps"></a>
                     <h4>Запуск <strong>reverse proxy</strong> на <strong>VPS</strong></h4>
+                    <p>
+                        Для определенности будем основываться на той же файловой структуре, которая использовалась
+                        для локального <strong>reverse proxy</strong>. Если не помните можно посмотреть в разделе
+                        <a href="index.html#file-structure">Вводная часть</a>
+                    </p>
+                    <p>
+                        Клонируем с <strong>GitHub</strong>
+                        проект <a href="https://github.com/acwstudio/nginx-reverse-proxy-ssl-remote">
+                        <strong>nginx-reverse-proxy-ssl-remote</strong></a> в директорию
+                        <strong><i>~/my-projects/docker-reverse-proxy</i></strong><br>
+                    </p>
+                    <p>
+                        Прежде чем выполнить скрипт <strong>init-letsencrypt.sh</strong> на запуск
+                        <strong>reverse proxy</strong> и запрос <strong>SSL</strong> сертификатов, сделаем
+                        некоторые настройки.
+                    </p>
+                    <a id="config"></a>
+                    <h4>Конфигурационные файлы <strong>Nginx</strong></h4>
+                    <p>Обсудим содержимое директории <strong><i>etc/nginx</i></strong></p>
+                    <p>
+                        <img src="images/nginx.conf.files.png">
+                    </p>
+                    <div class="table-wrapper">
+                        <table class="alt">
+                            <tbody>
+                            <tr>
+                                <td>1.</td>
+                                <td>
+                                    <strong><i>nginx.conf</i></strong>
+                                </td>
+                                <td>
+                                    Основной конфигурационный файл, в который так или иначе инклюдятся все
+                                    остальные файлы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2.</td>
+                                <td>
+                                    <strong><i>laravel-1.conf</i></strong><br>
+                                    <strong><i>laravel-2.conf</i></strong><br>
+                                    <strong><i>laravel-3.conf</i></strong><br>
+                                </td>
+                                <td>
+                                    Каждый из файлов, содержит блок, ответственный за селекцию и редирект
+                                    запроса к соответствующему приложению. Количество файлов зависит от
+                                    количества приложений позади <strong>reverse proxy</strong>. На каждый
+                                    файл создается симлинк, который инклюдится в
+                                    <strong><i>nginx.conf</i></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3.</td>
+                                <td>
+                                    <strong><i>common.conf</i></strong><br>
+                                    <strong><i>common-location.conf</i></strong><br>
+                                    <strong><i>ssl.conf</i></strong>
+                                </td>
+                                <td>
+                                    Эти файлы содержат неизменные повторяющиеся блоки. Все три файла инклюдятся
+                                    в каждый из <strong><i>laravel-1,2,3.conf</i></strong> файлов, чтобы все время
+                                    не писать туда одни и те же блоки.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4.</td>
+                                <td>
+                                    <strong><i>redirect.conf</i></strong><br>
+                                </td>
+                                <td>
+                                    Файл содержит блок, отвечающий за редирект <strong>HTTP</strong> в
+                                    <strong>HTTPS</strong>. Инклюдится прямо в <strong>nginx.conf</strong>.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
         </div>
@@ -199,6 +276,7 @@
                             <li><a href="nginx-reverse-proxy.html#intro">Введение</a></li>
                             <li><a href="nginx-reverse-proxy.html#localhost">localhost</a></li>
                             <li><a href="nginx-reverse-proxy.html#vps">VPS</a></li>
+                            <li><a href="nginx-reverse-proxy.html#config">Конфигурация Nginx</a></li>
                         </ul>
 
                     </li>

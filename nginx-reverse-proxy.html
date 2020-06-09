@@ -136,7 +136,7 @@
                     <blockquote>
                         Для удобства полная конфигурация разбита на несколько файлов, каждый из которых отвечает за
                         отдельные ее части. Потом эти файлы инклюдятся в определенной последовательности и
-                        комбинациях в один <strong>nginx.conf</strong> файл. Подробнее можно псомотреть
+                        комбинациях в один <strong>nginx.conf</strong> файл. Подробнее можно посмотреть
                         <a href="#config">ниже</a>
                     </blockquote>
                     <p>
@@ -179,7 +179,10 @@
                     <p>
                         Для определенности будем основываться на той же файловой структуре, которая использовалась
                         для локального <strong>reverse proxy</strong>. Если не помните можно посмотреть в разделе
-                        <a href="index.html#file-structure">Вводная часть</a>
+                        <a href="index.html#file-structure">Вводная часть</a>. Предполагается, что на вашем
+                        <strong>VPS</strong> в соответствии c разделом <a href="laravel-docker.html">
+                        <strong>Laravel на Docker</strong></a> развернуты два реальных приложения с доменными
+                        именами <strong>real-mysite.com</strong> и <strong>real-yoursite.com</strong>
                     </p>
                     <p>
                         Клонируем с <strong>GitHub</strong>
@@ -188,10 +191,72 @@
                         <strong><i>~/my-projects/docker-reverse-proxy</i></strong><br>
                     </p>
                     <p>
+                        <code>cd ~/my-projects</code><br>
+                        <code>git clone https://github.com/acwstudio/nginx-reverse-proxy-ssl-remote.git
+                            docker-reverse-proxy</code><br>
+                        <code>cd docker-reverse-proxy</code><br>
+                    </p>
+                    <p>
                         Прежде чем выполнить скрипт <strong>init-letsencrypt.sh</strong> на запуск
                         <strong>reverse proxy</strong> и запрос <strong>SSL</strong> сертификатов, сделаем
-                        некоторые настройки.
+                        некоторые настройки. Для начала создадим <strong>.env.ssl</strong> файл.
                     </p>
+                    <p>
+                        <code>cp .env.ssl.example .env.ssl</code><br>
+                        <code>nano .env.ssl</code><br>
+                    </p>
+                    <p>
+                        отредактируем некоторые строки<br>
+                        <code>DOMAINS='real-mysite.com real-yoursite.com'</code><br>
+                        <code>EMAIL='real-email@gmail.com'</code><br>
+                        если в режиме тестирования то оставить STAGING=1<br>
+                        <code>STAGING=0</code><br>
+                    </p>
+                    <p>Теперь необходимо создать конфигурационный файл
+                        <strong><i>etc/nginx/conf.d/site-available/real-mysite.conf</i></strong>,
+                        являющийся частью всей конфигурации и отвечающий за транслирование запроса к приложению.
+                        На каждое приложение создается свой файл<br>
+                    </p>
+                    <blockquote>
+                        Для удобства полная конфигурация разбита на несколько файлов, каждый из которых отвечает за
+                        отдельные ее части. Потом эти файлы инклюдятся в определенной последовательности и
+                        комбинациях в один <strong>nginx.conf</strong> файл. Подробнее можно посмотреть
+                        <a href="#config">ниже</a>
+                    </blockquote>
+                    <p>
+                        <code>cd etc/nginx/conf.d/sites-available/</code><br>
+                        <code>cp service-name.conf.example real-mysite.conf</code><br>
+                        <code>cd ../sites-enabled</code><br>
+                        <code>ln -s ../sites-available/real-mysite.conf real-mysite.conf</code><br>
+                        <code>nano ../sites-available/real-mysite.conf</code><br>
+                    </p>
+                    <p>
+                        В открывшемся файле редактируем следующие строки<br>
+                        <code>1 строка изменим <strong>MyApp</strong> на <strong>real-mysite</strong>
+                        </code><br>
+                        <code>3 строка изменим <strong>MyApp_nginx</strong> на
+                            <strong>nginx name container</strong>
+                        </code><br>
+                        <code>
+                            9 строка изменим <strong>myapp.local</strong> на <strong>lreal-mysite.com</strong>
+                        </code><br>
+                        <code>15 строка изменим <strong>http://MyApp</strong> на <strong>http://real-mysite
+                        </strong><br></code>
+                    </p>
+                    <p>
+                        Создать конфигурационный файл <strong><i>etc/nginx/conf.d/site-available/real-yoursite.conf</i>
+                    </strong> для второго приложения <strong>your-site.com</strong>
+                    </p>
+                    <p>
+                        Теперь все готово к запуску!
+                    </p>
+                    <p>
+                        <code>cd ~/my-projects/docker-reverse-proxy</code><br>
+                        <code>./init-letsencrypt.sh</code><br>
+                    </p>
+                    <p>Набираем в браузере <strong><i>http://real-mysite.com</i></strong> и замочек на месте</p>
+                    <p>Набираем в браузере <strong><i>http://real-yoursite.com</i></strong> и замочек на месте</p>
+
                     <a id="config"></a>
                     <h4>Конфигурационные файлы <strong>Nginx</strong></h4>
                     <p>Обсудим содержимое директории <strong><i>etc/nginx</i></strong></p>

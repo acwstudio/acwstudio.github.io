@@ -47,21 +47,27 @@
                         <p>Постановка задачи и создание структуры</p>
                     </header>
                     <p>
-                        Хочется автоматизировать развертывание среды исполнения для <strong>Laravel</strong> приложений.
-                        <br>
-                        На локальном окружении иметь возможность генерации локально-доверенных сертификатов с
-                        собственным центром сертификации для локальных доменов, определенных в файле
-                        <strong><i>/etc/hosts</i></strong> и обращаться к приложениям примерно так
-                        <strong><i>site-1.local</i></strong><br>
-                        На одном <strong>VPS</strong> иметь несколько <strong>Laravel</strong> приложений с получением
-                        бесплатных сертификатов от <a href="https://letsencrypt.org/">Let's Encrypt</a><br>
-                        Решить эти задачи, нам помогут <strong>nginx reverse proxy</strong>, <strong>Mkcert</strong>
-                        и <strong>Docker</strong>
+                        Автоматизировать развертывание среды исполнения для <strong>Laravel</strong> приложений с
+                        помощью <strong>Docker</strong>.<br>
+                        Генерировать локально-доверенные сертификаты с собственным центром сертификации для локальных
+                        доменов, определенных в файле <strong><i>/etc/hosts</i></strong> с помощью утилиты
+                        <a href="https://github.com/FiloSottile/mkcert">Mkcert</a>.<br>
+                        Получать бесплатные сертификаты от <a href="https://letsencrypt.org/">Let's Encrypt</a>
+                        для реальных доменов на <strong>VPS</strong> c помощью утилиты
+                        <a href="https://hub.docker.com/r/certbot/certbot/">certbot</a> <br>
+                        На локальном компьютере и на <strong>VPS</strong> реализовать
+                        <strong>Nginx Reverse Proxy</strong> для проверки сертификатов и транслирования запросов на
+                        соответствующие приложения позади него.<br>
+                        Это обеспечит идентичность локальной среды разработки и <strong>VPS</strong> и позволит
+                        на одном <strong>VPS</strong> разместить несколько приложений, а на локальном компьютере
+                        обращаться к приложению через браузер по локальному доменному имени, примерно так
+                        <strong><i>http://site-1.local</i></strong>
                     </p>
                     <p>Прежде чем приступить к решению задачи, определим требования к локальному компьютеру или
-                        VPS. Все описанное ниже было протестировано на OS Linux (Ubuntu 18), на других ОS возможны
+                        <strong>VPS</strong>. Все описанное ниже было протестировано на
+                        <strong>OS Linux (Ubuntu 18)</strong>, на других ОS возможны
                         нюансы, в частности, связанные с различием в структуре файловых систем. Это необходимо
-                        учитывать при создании <strong>Volume</strong> между docker контейнерами и OS.
+                        учитывать при создании <strong>volume</strong> между <strong>Docker</strong> контейнерами и OS.
                     </p>
                     <div class="col-6 col-12-small">
                         <h4>На компьютере или VPS должны быть</h4>
@@ -70,7 +76,7 @@
                             <li><strong>Docker</strong> версия 19.03.0 +</li>
                             <li><strong>Docker Compose</strong> версия 1.25.0 +</li>
                             <li>Система управления версиями <strong>Git</strong></li>
-                            <li>Инструмент <a href="https://github.com/FiloSottile/mkcert">Mkcert</a> -
+                            <li>Утилита <strong>Mkcert</strong> -
                                 <strong style="color: red"> только для локального компьютера!!!</strong>
                             </li>
                         </ul>
@@ -79,7 +85,7 @@
                     <div class="box">
                         <span class="image"><img src="images/full-docker-laravel.jpg" alt=""/></span>
                     </div>
-
+                    <a id="file-structure"></a>
                     <h4>Файловая структура</h4>
                     <div class="box">
                         <span class=""><img src="images/file-structure.png" alt=""/></span>
@@ -167,13 +173,7 @@
                 <ul>
                     <li><a style="color: red" href="index.html">Вводная часть</a></li>
                     <li><a href="laravel-docker.html">Laravel на Docker</a></li>
-                    <li>
-                        <span class="opener">Reverse proxy</span>
-                        <ul>
-                            <li><a href="reverse-proxy-local.html">Локальный сервер</a></li>
-                            <li><a href="reverse-proxy-vps.html">VPS</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="nginx-reverse-proxy.html">Reverse Proxy</a></li>
                 </ul>
             </nav>
 

@@ -51,10 +51,10 @@
                         <strong>Mkcert</strong> для генерации локально-доверенных сертификатов с собственным центром
                         сертификации. Чтобы можно было сразу посмотреть <strong>reverse proxy</strong> в действии,
                         нужно уже иметь пару-тройку приложений позади него. Как развернуть <strong>Laravel</strong>
-                        приложение с <strong>Docker</strong> контейнерами на локальном компьютере, смотрим
-                        <a href="laravel-docker.html">здесь</a>. <strong>Nginx</strong> веб сервер создадим и
-                        настроим в контейнере, а утилиту <strong>Mkcert</strong> установим непосредственно на
-                        локальном компьютере.
+                        приложение с <strong>Docker</strong> контейнерами на локальном компьютере или
+                        <strong>VPS</strong>, смотрим <a href="laravel-docker.html">здесь</a>.
+                        <strong>Nginx</strong> веб сервер создадим и настроим в контейнере, а утилиту
+                        <strong>Mkcert</strong> установим непосредственно на локальном компьютере.
                     </p>
                     <h4>Установка утилиты <strong>Mkcert</strong></h4>
                     <p>
@@ -78,6 +78,7 @@
                         можем задать нужную нам директорию и имена файлов <strong>SSL certificates</strong>. Директорию
                         и имена файлов мы определим в настройках <strong>reverse proxy</strong>.
                     </p>
+                    <a name="reverse config"></a>
                     <h4><strong>Reverse proxy</strong> как это работает</h4>
                     <p><strong>Reverse proxy</strong> это обычный <strong>Nginx</strong>, который слушает стандартные
                         порты <strong>"80"</strong> и <strong>"443"</strong>, но настроен таким образом, чтобы
@@ -127,6 +128,7 @@
                                             Директория для размещения <strong>SSL certificates</strong>
                                         </td>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -188,6 +190,7 @@
                                             <strong>HTTPS</strong>. Инклюдится прямо в <strong>nginx.conf</strong>.
                                         </td>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

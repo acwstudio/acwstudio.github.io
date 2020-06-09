@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Laravel by Docker</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <link rel="stylesheet" href="assets/css/main.css"/>
+</head>
+<body class="is-preload">
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            <header id="header">
+                <a href="index.html" class="logo"><strong>AS-Programmer</strong>
+                    Laravel и среда исполнения на Docker</a>
+                <ul class="icons">
+                    <li><a href="https://t.me/Andrey_Sunday" class="icon brands fa-telegram"><span
+                            class="label">Telegram</span></a></li>
+                    <li><a href="https://facebook.com/andrey.voskresenskiy" class="icon brands fa-facebook-f"><span
+                            class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon brands fa-whatsapp">
+                        <span class="label">WhatsApp</span></a>
+                    </li>
+                    <li><a href="#" class="icon brands fa-viber"><span
+                            class="label">Viber</span></a></li>
+                    <li><a href="https://join.skype.com/invite/ccWntJC3fvwv" class="icon brands fa-skype"><span
+                            class="label">Skype</span></a></li>
+                </ul>
+            </header>
+
+            <!-- Banner -->
+            <section id="banner">
+                <div class="content">
+                    <header class="major">
+                        <h2><strong>Nginx reverse proxy</strong> на <strong>Docker</strong> контейнерах</h2>
+                        <p><strong>Reverse proxy</strong> для <strong>localhost</strong> и <strong>VPS</strong></p>
+                    </header>
+                    <a id="intro"></a>
+                    <p>
+                        <strong>Reverse proxy</strong> слушает <strong>80</strong> и <strong>443</strong> порты,
+                        принимает и транслирует запросы ко всем приложениям позади него и обеспечивает безопасный
+                        <strong>SSL</strong> протокол. Применение <strong>reverse proxy</strong> дает следующие
+                        возможности: </p>
+                    <ul>
+                        <li>
+                            обращение к приложениям на <strong>localhost</strong> примерно так
+                            <strong>my-app.local</strong> вместо обезличенного <strong>localhost:8000</strong>
+                        </li>
+                        <li>
+                            размещение на одном <strong>VPS</strong> несколько доменов
+                        </li>
+                        <li>
+                            проверяет <strong>SSL</strong> сертификаты и управляет их получением и продлением
+                            для всех приложений в одном месте
+                        </li>
+                    </ul>
+                    <p>
+                        Существуют различия в реализации <strong>reverse proxy</strong> на <strong>VPS</strong>
+                        и <strong>localhost</strong>, в основном связанные с реализацией <strong>SSL</strong>
+                        протокола. На <strong>localhost</strong> он носит имитационный характер. На
+                        <strong>VPS</strong> мы имеем дело с реальными доменами и реальными <strong>SSL</strong>
+                        сертификатами.
+                    </p>
+                    <p>
+                        Для имитации <strong>SSL</strong> протокола на <strong>localhost</strong>,
+                        мы используем утилиту <a href="https://github.com/FiloSottile/mkcert">
+                        <strong>Mkcert</strong></a>, любезно предоставленную <strong>Filippo Valsorda</strong>.
+                        Данная утилита позволяет генерировать локально-доверенные сертификаты с собственным
+                        локальным центром сертификации. Для запуска <strong>reverse proxy</strong> на
+                        <strong>localhost</strong> и генерации <strong>SSL</strong> сертификатов я написал
+                        специальный скрипт, который при необходимости установит <strong>Mkcert</strong>.
+                    </p>
+                    <p>
+                        Реальные <strong>SSL</strong> сертификаты для <strong>VPS</strong> будем получать
+                        в центре сертификации <strong>Let's Encrypt</strong>, который предоставляет их бесплатно.
+                        Для запуска <strong>reverse proxy</strong> на <strong>VPS</strong> и генерации
+                        <strong>SSL</strong> сертификатов, я так же написал специальный скрипт. Основой для
+                        этого послужила
+                        <a href="https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71">
+                            вот эта статья
+                        </a>
+                    </p>
+                    <a id="localhost"></a>
+                    <h4>Запуск <strong>reverse proxy</strong> на <strong>localhost</strong></h4>
+                    <p>
+                        Для определенности будем основываться на файловой структуре, которая создана в разделе
+                        <a href="index.html#file-structure">Вводная часть</a> и уже существует хотя бы одно
+                        приложение, созданное в разделе <a href="laravel-docker.html">
+                        <strong>Laravel на Docker</strong></a><br>
+                        а так же в <strong><i>/etc/hosts</i></strong> существует запись о локальном домене для
+                        этого приложения
+                    </p>
+                    <p><code>127.0.0.1 laravel-1.local</code></p>
+                    <p>
+                        Клонируем с <strong>GitHub</strong>
+                        проект <a href="https://github.com/acwstudio/nginx-reverse-proxy-ssl-local">
+                        <strong>nginx-reverse-proxy-ssl-local</strong></a> в директорию
+                        <strong><i>~/my-projects/docker-reverse-proxy</i></strong><br>
+                    </p>
+                    <p>
+                        <code>cd ~/my-projects</code><br>
+                        <code>git clone https://github.com/acwstudio/nginx-reverse-proxy-ssl-local.git
+                            docker-reverse-proxy</code><br>
+                        <code>cd docker-reverse-proxy</code><br>
+                    </p>
+                    <p>
+                        Перед тем как выполнить скрипт <strong>init-mkcert.sh</strong> на запуск нашего
+                        <strong>reverse proxy</strong>, необходимо сделать некоторые настройки в файле
+                        <strong><i>.env.ssl</i></strong>
+                    </p>
+                    <p>
+                        <code>cp .env.ssl.example .env.ssl</code><br>
+                        <code>nano .env.ssl</code><br>
+                    </p>
+                    <p>
+                        отредактируем DOMAINS, указав наши локальные домены<br>
+                        <code>DOMAINS='laravel-1.local'</code><br>
+                    </p>
+                    <p>Теперь необходимо создать конфигурационный файл
+                        <strong><i>etc/nginx/conf.d/site-available/laravel-1.conf</i></strong>,
+                        являющийся частью всей конфигурации и отвечающий за транслирование запроса к приложению.
+                        На каждое приложение создается свой файл<br>
+                    </p>
+                    <blockquote>
+                        Для удобства полная конфигурация разбита на несколько файлов, каждый из которых отвечает за
+                        отдельные ее части. Потом эти файлы инклюдятся в определенной последовательности и
+                        комбинациях в один <strong>nginx.conf</strong> файл.
+                    </blockquote>
+                    <p>
+                        <code>cd etc/nginx/conf.d/sites-available/</code><br>
+                        <code>cp service-name.conf.example laravel-1.conf</code><br>
+                        <code>cd ../sites-enabled</code><br>
+                        <code>ln -s ../sites-available/laravel-1.conf laravel-1.conf</code><br>
+                        <code>nano ../sites-available/laravel-1.conf</code><br>
+                    </p>
+                    <p>
+                        В открывшемся файле редактируем следующие строки<br>
+                        <code>1 строка изменим <strong>MyApp</strong> на <strong>laravel-app-1</strong>
+                        </code><br>
+                        <code>3 строка изменим <strong>MyApp_nginx</strong> на <strong>LarApp1_nginx</strong>
+                        </code><br>
+                        <code>
+                            9 строка изменим <strong>myapp.local</strong> на <strong>laravel-1.local</strong>
+                        </code><br>
+                        <code>15 строка изменим <strong>http://MyApp</strong> на <strong>http://laravel-app-1
+                        </strong><br></code>
+                    </p>
+                    <blockquote>
+                        <strong>Примечание:</strong> в 3 строке <strong>LarApp1_nginx</strong> это имя контейнера
+                        в котором выполняется <strong>nginx</strong> для данного приложения. Напомню, оно было
+                        создано в разделе <a href="laravel-docker.html"><strong>Laravel на Docker</strong></a>
+                    </blockquote>
+                    <p>
+                        Теперь все готово к запуску!
+                    </p>
+                    <p>
+                        <code>cd ~/my-projects/docker-reverse-proxy</code><br>
+                        <code>cd ./init-mkcert.sh</code><br>
+                    </p>
+                    <p>Набираем в браузере <strong><i>http://laravel-1.local</i></strong> и замочек на месте</p>
+                    <p>
+                        <img src="images/https.laravel-1.png">
+                    </p>
+                    <a id="vps"></a>
+                    <h4>Запуск <strong>reverse proxy</strong> на <strong>VPS</strong></h4>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="inner">
+
+            <!-- Menu -->
+            <nav id="menu">
+                <header class="major">
+                    <h2>Меню</h2>
+                </header>
+                <ul>
+                    <li><a href="index.html">Вводная часть</a></li>
+                    <li><a href="laravel-docker.html">Laravel на Docker</a></li>
+<!--                    <li><a style="color: red" href="nginx-reverse-proxy.html">Reverse Proxy</a></li>-->
+                    <li>
+                        <span style="color: red" class="opener active">Reverse-proxy</span>
+
+                        <ul>
+                            <li><a href="nginx-reverse-proxy.html#intro">Введение</a></li>
+                            <li><a href="nginx-reverse-proxy.html#localhost">localhost</a></li>
+                            <li><a href="nginx-reverse-proxy.html#vps">VPS</a></li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Section -->
+            <section>
+                <header class="major">
+                    <h2>Get in touch</h2>
+                </header>
+                <ul class="contact">
+                    <li class="icon solid fa-envelope"><a href="#">acwstudio2018@gmail.com</a></li>
+                    <li class="icon solid fa-phone">+7(921) 439-9531</li>
+                    <li class="icon solid fa-home">Russia, Saint-Petersburg<br/></li>
+                </ul>
+            </section>
+
+            <!-- Footer -->
+            <footer id="footer">
+                <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>.
+                    Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+            </footer>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>
